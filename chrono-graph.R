@@ -59,7 +59,7 @@ metadata <- read.csv("home/metadata.csv",
                        "character",
                        "double",
                        rep("character", 2),
-                       rep("double", 4),
+                       rep("double", 5),
                        rep("character", 51)),
                      dec = ".")
 

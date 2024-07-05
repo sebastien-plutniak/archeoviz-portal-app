@@ -40,14 +40,15 @@ metadata <- read.csv("metadata-deployed.csv",
                        "character",
                        "double",
                        rep("character", 2),
-                       rep("double", 4),
+                       rep("double", 5),
                        rep("character", 52)),
                      dec = ".")
 
-sites <- metadata[ ! metadata$site.name %in% c("Mitoc", "bda"),]
+sites <- metadata[ ! metadata$site.name %in% c(""),]
 
-sites$color <- "purple"
-sites[sites$n.sites > 0, ]$color <- "orange"
+sites$color <- "#440154FF"
+sites[sites$n.dates > 0, ]$color <- "orange"
+sites[sites$n.sites > 0, ]$color <- "#21908CFF"
 
 # DEFINE UI ----
 ui <- shinyUI(  
@@ -121,9 +122,11 @@ ui <- shinyUI(
                                               format(sum(sites$n.objects, na.rm = T), big.mark=","),
                                               "</b> objects &emsp;&emsp;<b>", 
                                               format(sum(sites$n.refits, na.rm = T), big.mark=","),
-                                              "</b> refitting relationships &emsp;&emsp;<b>", 
+                                              "</b> refitting relations &emsp;&emsp;<b>", 
                                               format(sum(sites$n.sites, na.rm = T), big.mark=","),
-                                              "</b> sites",
+                                              "</b> sites  &emsp;&emsp;<b>", 
+                                              format(sum(sites$n.dates, na.rm = T), big.mark=","),
+                                              "</b> dates",
                                               "<p/>"
                                   )),
                                   leafletOutput("map", width="90%"), # : leaflet map  ----
@@ -146,7 +149,7 @@ ui <- shinyUI(
                                                 <b>country</b>, and ",
                                               span(
                                                 `data-toggle` = "tooltip", `data-placement` = "bottom",
-                                                title = "lithic industry, animal bone, pottery, antler, lithic core, eggshell, millstone, microfauna, coproliths, bone industry, shell, human bone, metal objects, archaeological site",
+                                                title = "dates, lithic industry, animal bone, pottery, antler, lithic core, eggshell, millstone, microfauna, coproliths, bone industry, shell, human bone, metal objects, archaeological site",
                                                 HTML("<b><a href=>remain type</a></b>.")),
                                               " </li>
                   </ul>"))
@@ -195,7 +198,7 @@ ui <- shinyUI(
                                          h2("Package and Programming Code"),
                                          tags$div(HTML("<ul>
                        <li> The <i>archeoViz</i> R package is available on the <a href=https://CRAN.R-project.org/package=archeoViz target=_blank>CRAN</a>.</li>
-                       <li> Plutniak, Sébastien, Renata Araujo, Laura Coltofean, Nicolas Delsol, Sara Giardino, Julian Laabs. 2023. “archeoViz. Visualisation, Exploration, and Web Communication of Archaeological Excavation Data”. v1.3.4, <i>Zenodo</i>, DOI: <a href=https://doi.org/10.5281/zenodo.7460193 target=_blank>10.5281/zenodo.7460193</a>.</li>
+                       <li> Plutniak, Sébastien, Renata Araujo, Laura Coltofean, Nicolas Delsol, Sara Giardino, Julian Laabs. 2023. “archeoViz. Visualisation, Exploration, and Web Communication of Archaeological Excavation Data”. v1.3.5, <i>Zenodo</i>, DOI: <a href=https://doi.org/10.5281/zenodo.7460193 target=_blank>10.5281/zenodo.7460193</a>.</li>
                        <li>Plutniak, Sébastien, Anaïs Vignoles, Élisa Caron-Laviolette. 2023. The archeoViz Portal: Dissemination of Spatial Archaeological Datasets, DOI: <a href=https://doi.org/10.5281/zenodo.10251182 target=_blank>10.5281/zenodo.10251182</a> </li>
                       </ul>
                                 ")),
@@ -280,7 +283,7 @@ server <- function(input, output, session) {
   #                                 "&ensp; <img  title='The dataset edited with this instance is available in open access.' height=12px src=icon-openaccess.png>")
   
   openness.scale <- function(instance){
-    # browser()
+    
     icon.yellow <- "<img height=12px src=icon-openaccess-yellow.png>"
     icon.purple <- "<img height=12px src=icon-openaccess-purple.png>"
    
@@ -331,8 +334,8 @@ server <- function(input, output, session) {
     
     sites <- sites[sites$altitude >= input$altitude[1] & sites$altitude <= input$altitude[2], ]
     
-    tab <- sites[ , c("tab.link", "openness", "site.country", "period.keywords", "period", "n.objects", "n.refits", "n.objects.in.refitting.set", "n.sites", "object_type.keywords", "color") ]
-    colnames(tab) <- c("Site name", "Openness", "site.country", "period.keywords", "Period coverage", "Nr of objects", "Nr of refitting relationships", "Nr of refitting objects", "Nr of sites", "object_type.keywords", "color")
+    tab <- sites[ , c("tab.link", "openness", "site.country", "period.keywords", "period", "n.objects", "n.refits", "n.objects.in.refitting.set", "n.sites", "n.dates", "object_type.keywords", "color") ]
+    colnames(tab) <- c("Site name", "Openness", "site.country", "period.keywords", "Period coverage", "Nr of objects", "Nr of refitting relationships", "Nr of refitting objects", "Nr of sites", "Nr of dates", "object_type.keywords", "color")
     
     DT::datatable(tab, rownames=F,  escape=F, selection = 'single',
                   options = list(lengthMenu = c(10, 20, 40), pageLength=10,
@@ -389,13 +392,15 @@ server <- function(input, output, session) {
                        color = ~color, radius = 6,
                        fillOpacity = ~fillOpacity,
                        opacity = 0.99,
+                       options = pathOptions(clickable = T,
+                                             interactive = TRUE),
                        popupOptions = popupOptions(closeOnClick=T),
                        clusterOptions = markerClusterOptions())  %>%
       addLegend("bottomright", 
                 title = "Type of data", 
-                colors = c("purple",  "orange"),
-                labels = c("objects", "sites"),
-                opacity = 0.8)
+                colors = c("#440154FF", "#21908CFF", "orange"),
+                labels = c("objects", "sites", "dates"),
+                opacity = 0.8) 
     
   })
   
