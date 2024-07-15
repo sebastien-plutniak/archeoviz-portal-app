@@ -55,11 +55,11 @@ retrieve.chrono.path <- function(chain, ref.table, chrono.graph){
  
 metadata <- read.csv("home/metadata.csv",
                      colClasses=c(
-                       rep("double", 4),
+                       rep("double", 8),
                        "character",
                        "double",
                        rep("character", 2),
-                       rep("double", 4),
+                       rep("double", 5),
                        rep("character", 51)),
                      dec = ".")
 
