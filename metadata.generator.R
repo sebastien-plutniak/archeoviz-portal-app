@@ -3,6 +3,7 @@ library(htmlTable)
 library(magrittr)
 
 
+
 add.viaf.link <- function(name, viaf){
   if( ( ! is.na(name)) & ( ! is.na(viaf)) ){
     paste0("<a href=https://viaf.org/", viaf, " target=_blank>", name,"</a>")
@@ -22,12 +23,12 @@ add.orcid.logo <- function(name, orcid){
 }
 
 
-
-
 metadata.generator <- function(df, site.name, lang){
   
-  df[df == ""] <- NA
   df <- df[df$site.name == site.name, ]
+  df[df == ""] <- NA
+  
+  df.save <- df
 
   # add viaf link
   df$excavator1 <- add.viaf.link(df$excavator1, df$excavator1.viaf)
@@ -77,7 +78,14 @@ metadata.generator <- function(df, site.name, lang){
   df$period <- paste0("<a href=", df$period1.uri,
                       " title='Click to go to the PACTOLS concept' target=_blank>",
                          df$period1, "</a>")
-  if( ! is.na(df$period2)){
+  
+  if( ! is.na(df$period3)){
+    df$period <- paste0(
+      df$period, 
+      " → <a href=", df$period3.uri,
+      " title='Click to go to the PACTOLS concept' target=_blank>", 
+      df$period3, "</a>")
+  } else if( ! is.na(df$period2)){
     df$period <- paste0(
       df$period, 
       " → <a href=", df$period2.uri,
@@ -136,15 +144,26 @@ metadata.generator <- function(df, site.name, lang){
   
   # Switch linguistique   ----
   if(lang == "en"){
-    val.names <- c("Site name", "Site coordinates", "Site altitude (m)", "Site location", "Excavator", "Excavation date", "Data creator", "Data publication date", "Period",  "Nr of objects", "Nr of refitting relationships", "Nr of refitting objects", "Dataset", "License", "Data editor", "Reprocessing code", "archeoViz publication date")
+    val.names <- c("Site name", "Site coordinates", "Site altitude (m)", "Site location", "Excavator", "Excavation date", "Data creator", "Data publication date", "Period",  "Nr of objects", "Nr of refitting relationships", "Nr of refitting objects", "Nr of sites", "Nr of dates", "Dataset", "License", "Data editor", "Reprocessing code", "archeoViz publication date")
   } else if(lang == "fr"){
-    val.names <- c("Nom du site", "Coordonnées", "Altitude (m)", "Commune", "Fouilleur", "Date des fouilles", "Créateur des données", "Date de publication des données", "Période chronologique", "N d'objets", "N de remontages", "N d'objets remontables", "Jeu de données", "Licence", "Éditeur des données", "Code d'édition", "Date de publication archeoViz")
+    val.names <- c("Nom du site", "Coordonnées", "Altitude (m)", "Commune", "Fouilleur", "Date des fouilles", "Créateur des données", "Date de publication des données", "Période chronologique", "N objets", "N remontages", "N objets remontables", "N sites", "N dates", "Jeu de données", "Licence", "Éditeur des données", "Code d'édition", "Date de publication archeoViz")
   } 
+  
   
   val.names <- paste0("<font face=courier>", val.names, "</font>")
   
   # Sélection des variables :
-  val <- unlist(df[c("site.name", "latlon", "altitude", "location", "excavators", "excavation.date",  "data.creator", "data.publication", "period", "n.objects", "n.refits", "n.objects.in.refitting.set", "data.identifier.url", "data.license", "data.editor", "workflow.identifier.url",  "archeoviz.pub.date")])
+  
+  val <- unlist(df[c("site.name", "latlon", "altitude", "location", "excavators", "excavation.date",  "data.creator", "data.publication", "period", "n.objects", "n.refits", "n.objects.in.refitting.set", "n.sites", "n.dates", "data.identifier.url", "data.license", "data.editor", "workflow.identifier.url",  "archeoviz.pub.date")])
+  
+  # TODO : if n.sites > 0, then  display "n.sites" and not "n.objects", "n.refits", "n.objects.in.refitting.set",
+  if(df$n.sites > 0){
+    val.names <- val.names[-c(10:12)]
+    val <- val[-c(10:12)]
+  } else {
+    val.names <- val.names[-13]
+    val <- val[-13]
+  }
   
   df2 <- data.frame("   " = val.names, " " = val, check.names = F)
   
@@ -167,6 +186,17 @@ metadata.generator <- function(df, site.name, lang){
     df$data.editor <- paste0(", ", df$data.editor)
   }
   
+  df$period.citation <- df$period1
+  if( ! is.na(df$period3)){
+    df$period.citation <- paste0(df$period1, "-", df$period3)
+  } else if( ! is.na(df$period2)){
+    df$period.citation <- paste0(df$period1, "-", df$period2)
+  }
+  
+  if(df.save$data.editor1 %in% c(df.save$data.creator1, df.save$data.creator2, df.save$data.creator3)){
+    df$data.editor <- ""
+  }
+  
   citation <- paste0("<h2>", citation.title, "</h2>",
                     "archeoViz platform maintainers, ",
                     df$data.creator,
@@ -175,7 +205,7 @@ metadata.generator <- function(df, site.name, lang){
                     "<b>", df$archeoviz.pub.year, "</b>. ",
                     "<i>Online data visualisation of: ",
                     site.name, " (",
-                    df$period1, 
+                    df$period.citation, 
                     ") using the archeoViz web application</i>, ",
                     "<a href=",
                     df$archeoviz.url,
