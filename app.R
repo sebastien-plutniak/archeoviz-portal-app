@@ -407,7 +407,7 @@ server <- function(input, output, session) {
     
     map <- leaflet() %>%  
       setView(lng = 10, lat = 30, zoom = 1)  %>%
-      addWMSTiles(baseUrl = 'http://ows.mundialis.de/services/service?',
+      addWMSTiles(baseUrl = 'https://ows.terrestris.de/osm/service?',
                   layers = "TOPO-WMS",
                   attribution = '&copy; <a href=https://www.openstreetmap.org/copyright>OpenStreetMap</a> contributors') %>%
       # addProviderTiles(providers$Esri.WorldPhysical) %>%

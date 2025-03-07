@@ -24,7 +24,6 @@ Using the dynamic table,  *archeoViz* instances can be:
     * chronological period (and larger period).
 
 
-
 ## metadata.generator.R
 
 The script `metadata.generator.R` generates an HTML code to be included in the homepage of *archeoViz* instances.
