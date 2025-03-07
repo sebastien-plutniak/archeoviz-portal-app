@@ -135,35 +135,56 @@ metadata.generator <- function(df, site.name, lang){
                         df$site.location, "</a>")
   }
   
-  # date ----
+  # publication date ----
   df$archeoviz.pub.date <- as.Date(as.character(df$archeoviz.pub.date),
-                                          format = "%Y%m%d")
+                                   format = "%Y%m%d")
   df$archeoviz.pub.year <- format(df$archeoviz.pub.date, format = "%Y")
   df$archeoviz.pub.date <- format(df$archeoviz.pub.date, format = "%d-%m-%Y")
+
+  # update date ----
+  df$archeoviz.update.date <- as.Date(as.character(df$archeoviz.update.date),
+                                   format = "%Y%m%d")
+  # df$archeoviz.update.date <- format(df$archeoviz.update.date, format = "%Y")
+  df$archeoviz.update.date <- format(df$archeoviz.update.date, format = "%d-%m-%Y")
   
   
   # Switch linguistique   ----
   if(lang == "en"){
-    val.names <- c("Site name", "Site coordinates", "Site altitude (m)", "Site location", "Excavator", "Excavation date", "Data creator", "Data publication date", "Period",  "Nr of objects", "Nr of refitting relationships", "Nr of refitting objects", "Nr of sites", "Nr of dates", "Dataset", "License", "Data editor", "Reprocessing code", "archeoViz publication date")
+    val.names <- c("Site name", "Site coordinates", "Site altitude (m)", "Site location", "Excavator", "Excavation date", "Data creator", "Data publication date", "Period",  "Nr of objects", "Nr of refitting relationships", "Nr of refitting objects", "Nr of sites", "Nr of dates", "Dataset", "License", "Data editor", "Reprocessing code", "archeoViz publication date", "archeoViz update date")
   } else if(lang == "fr"){
-    val.names <- c("Nom du site", "Coordonnées", "Altitude (m)", "Commune", "Fouilleur", "Date des fouilles", "Créateur des données", "Date de publication des données", "Période chronologique", "N objets", "N remontages", "N objets remontables", "N sites", "N dates", "Jeu de données", "Licence", "Éditeur des données", "Code d'édition", "Date de publication archeoViz")
+    val.names <- c("Nom du site", "Coordonnées", "Altitude (m)", "Commune", "Fouilleur", "Date des fouilles", "Créateur des données", "Date de publication des données", "Période chronologique", "N objets", "N remontages", "N objets remontables", "N sites", "N dates", "Jeu de données", "Licence", "Éditeur des données", "Code d'édition", "Date de publication archeoViz", "Date de mise à jour archeoViz")
   } 
   
-  
-  val.names <- paste0("<font face=courier>", val.names, "</font>")
-  
   # Sélection des variables :
+  val <- unlist(df[c("site.name", "latlon", "altitude", "location", "excavators", "excavation.date",  "data.creator", "data.publication", "period", "n.objects", "n.refits", "n.objects.in.refitting.set", "n.sites", "n.dates", "data.identifier.url", "data.license", "data.editor", "workflow.identifier.url",  "archeoviz.pub.date", "archeoviz.update.date")])
   
-  val <- unlist(df[c("site.name", "latlon", "altitude", "location", "excavators", "excavation.date",  "data.creator", "data.publication", "period", "n.objects", "n.refits", "n.objects.in.refitting.set", "n.sites", "n.dates", "data.identifier.url", "data.license", "data.editor", "workflow.identifier.url",  "archeoviz.pub.date")])
-  
-  # TODO : if n.sites > 0, then  display "n.sites" and not "n.objects", "n.refits", "n.objects.in.refitting.set",
-  if(df$n.sites > 0){
-    val.names <- val.names[-c(10:12)]
-    val <- val[-c(10:12)]
-  } else {
-    val.names <- val.names[-13]
-    val <- val[-13]
+  if(df$excavators == ""){
+    val.names <- val.names[- which(names(val) %in% c("excavators", "excavation.date"))  ]
+    val <- val[- which(names(val) %in% c("excavators", "excavation.date"))  ]
   }
+  
+  if(df$n.objects > 0){
+    val.names <- val.names[- which(names(val) %in% c("n.sites", "n.dates"))  ]
+    val <- val[- which(names(val) %in% c("n.sites", "n.dates"))  ]
+  }
+  
+  if(df$n.sites > 0){
+    val.names <- val.names[- which(names(val) %in% c("n.objects", "n.refits", "n.objects.in.refitting.set", "n.dates"))  ]
+    val <- val[- which(names(val) %in% c("n.objects", "n.refits", "n.objects.in.refitting.set", "n.dates"))  ]
+  }
+  
+  if(df$n.dates > 0){
+    val.names <- val.names[- which(names(val) %in% c("n.objects", "n.refits", "n.objects.in.refitting.set", "n.sites"))  ]
+    val <- val[- which(names(val) %in% c("n.objects", "n.refits", "n.objects.in.refitting.set", "n.sites"))  ]
+  }
+  
+  if(is.na(df$archeoviz.update.date)){
+    val.names <- val.names[- which(names(val) == "archeoviz.update.date")  ]
+    val <- val[- which(names(val) == "archeoviz.update.date")  ]
+  }
+  
+  # add html tags
+  val.names <- paste0("<font face=courier>", val.names, "</font>")
   
   df2 <- data.frame("   " = val.names, " " = val, check.names = F)
   

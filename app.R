@@ -41,10 +41,10 @@ metadata <- read.csv("metadata-deployed.csv",
                        "double",
                        rep("character", 2),
                        rep("double", 5),
-                       rep("character", 52)),
+                       rep("character", 53)),
                      dec = ".")
 
-sites <- metadata[ ! metadata$site.name %in% c(""),]
+sites <- metadata[ ! metadata$site.name %in% c("Les Rivaux", "Bombrini"),]
 
 sites$color <- "#440154FF"
 sites[sites$n.dates > 0, ]$color <- "orange"
@@ -153,7 +153,7 @@ ui <- shinyUI(
                                                 <b>country</b>, and ",
                                               span(
                                                 `data-toggle` = "tooltip", `data-placement` = "bottom",
-                                                title = "dates, lithic industry, animal bone, pottery, antler, lithic core, eggshell, millstone, microfauna, coproliths, bone industry, shell, human bone, metal objects, archaeological site",
+                                                title = "dates, lithic industry, animal bone, pottery, antler, lithic core, eggshell, millstone, microfauna, coprolites, bone industry, shell, human bone, metal objects, archaeological site",
                                                 HTML("<b><a href=>remain type</a></b>.")),
                                               " </li>
                   </ul>"))
@@ -184,6 +184,23 @@ ui <- shinyUI(
                            ) # end column
                          ) # end fluidRow 
                 ),
+                tabPanel("Contribute", # : TAB contribute ----
+                         fluidRow(column(1),
+                                  column(7,
+                                         tags$div(HTML("
+                             <h2>Contact</h2>
+                              Do you 
+                              <ul>
+                               <li>have a question?</li>
+                               <li>want to reference an archeoViz instance here? </li>
+                               <li> need support to create an archeoViz instance? </li>
+                              </ul>
+                              Feel free to write us at <i>archeoViz portal</i>'s maintainers: <a href=mailto:archeoviz-maintainers@services.cnrs.fr>archeoviz-maintainers@services.cnrs.fr</a>
+               ") # end HTML
+                                         ) # end div
+                                  )    # end column
+                         ) # end fluidrow
+                ), #end tab
                 tabPanel("References & Documentation", # : TAB references ----
                          fluidRow(column(1),
                                   column(7,  
@@ -208,8 +225,9 @@ ui <- shinyUI(
                                 ")),
                                          h2("Presentations slides"),
                                          tags$div(HTML("<ul>
-                        <li> Plutniak, Sébastien. “<a href=https://hal.science/hal-04146410 target=_blank>Fostering the Publication of Spatial Archaeological Data: a Decentralized Approach. The archeoViz Web Application and its Portal</a>”.</li>
-                        <li> Plutniak, Sébastien, Anaïs Vignoles. “<a href=https://hal.science/hal-04070444 target=_blank>L’application web / package archeoViz et son portail web. Une solution décentralisée d’éditorialisation de données archéologiques spatialisées</a>”.</li>
+                        <li> Plutniak, Sébastien, Anaïs Vignoles, Élisa Caron-Laviolette. 2024. “<a href=https://doi.org/10.5281/zenodo.13862828 target=_blank>Keep Control of Your Data! A Decentralized, Open-Source and Community-Driven Approach to Archaeological Data Sharing Through the archeoViz Portal</a>”.</li>
+                        <li> Plutniak, Sébastien, Anaïs Vignoles. 2023. “<a href=https://hal.science/hal-04070444 target=_blank>L’application web / package archeoViz et son portail web. Une solution décentralisée d’éditorialisation de données archéologiques spatialisées</a>”.</li>
+                        <li> Plutniak, Sébastien. 2023. “<a href=https://hal.science/hal-04146410 target=_blank>Fostering the Publication of Spatial Archaeological Data: a Decentralized Approach. The archeoViz Web Application and its Portal</a>”.</li>                        
                       </ul>       "
                                          )), #end div and html
                                          h2("Openness index"),
@@ -247,9 +265,17 @@ ui <- shinyUI(
                 </p>
                 <p>Renata Araujo, Sara Giardino, Julian Laabs, Nicolas Delsol, and Laura Coltofean translated the application into Portuguese, Italian, German, Spanish, and Romanian respectively.</p><br>
                  <div style='text-align:center'>
-                <a href=https://citeres.univ-tours.fr/ target=_blank><img height='60px' src=logo-citeres.png></a>
-                <a href=https://www.cnrs.fr target=_blank><img height='60px' src=logo-cnrs.png></a>
-                <a href=https://www.huma-num.fr/ target=_blank><img height='60px' src=logo-humanum.jpg></a>
+                    <b><i>archeoViz</i></b> and the <b><i>archeoViz Portal</i></b>
+                    <br><br>
+                    <table> 
+                      <tr>
+                        <td>are developped at: <br> <br> <a href=https://www.cnrs.fr target=_blank><img height='60px' src=logo-cnrs.png></a><a href=https://citeres.univ-tours.fr/ target=_blank><img height='60px' src=logo-citeres.png></a>  </td>
+                        <td>  are hosted by: &nbsp; <br> <br> <a href=https://www.huma-num.fr/ target=_blank><img height='60px' src=logo-humanum.jpg></a></td>
+                        <td> are supported by: &nbsp;  &nbsp; &nbsp; <br> <br> <a href=https://masa.hypotheses.org/archeoviz-visualisation-des-donnees-archeologiques  target=_blank><img height='60px' src=logo-masa.png></a></td>
+                        <td> received the Open science prize: &nbsp;  &nbsp; &nbsp; <br> <br> <a href=https://www.ouvrirlascience.fr/remise-des-prix-science-ouverte-du-logiciel-libre-de-la-recherche-2024/  target=_blank><img height='60px' src=logo-prix-so.jpg></a></td>                    
+                        <td> are referenced as: &nbsp; <br>  <br><a href=http://doi.org/10.17616/R31NJNOZ  target=_blank><img height='60px' src=logo-re3data.png></a></td>
+                      </tr>
+                    </table> 
                 </div> 
                ") # end HTML
                                          ) # end div
@@ -290,7 +316,7 @@ server <- function(input, output, session) {
     
     icon.yellow <- "<img height=12px src=icon-openaccess-yellow.png>"
     icon.purple <- "<img height=12px src=icon-openaccess-purple.png>"
-   
+    
     openness.labels <- c("archeoViz instance",
                          "reprocessing script available",
                          "published dataset",
@@ -298,24 +324,24 @@ server <- function(input, output, session) {
                          "internal linking")
     
     ranks <- c(TRUE, 
-           instance[which(names(instance) == "workflow.identifier.value")] != "–",
-           instance[which(names(instance) == "data.identifier.value")] != "–",
-           instance[which(names(instance) == "data.license")] != "–",
-           instance[which(names(instance) == "internal.linking")] == "TRUE"
-               )
+               instance[which(names(instance) == "workflow.identifier.value")] != "–",
+               instance[which(names(instance) == "data.identifier.value")] != "–",
+               instance[which(names(instance) == "data.license")] != "–",
+               instance[which(names(instance) == "internal.linking")] == "TRUE"
+    )
     
     paste0(c("<div title='",
-           sum(ranks), "/5: ",
-           paste(openness.labels[ranks], collapse=", "),
-           "'>",
-          paste0(rep(icon.purple,
-                     length(openness.labels[ranks])), 
-                 collapse = ""),
-          paste0(rep(icon.yellow,
-                     5 - length(openness.labels[ranks])), 
-                     collapse = ""),
-          "</div>"),
-          collapse = ""
+             sum(ranks), "/5: ",
+             paste(openness.labels[ranks], collapse=", "),
+             "'>",
+             paste0(rep(icon.purple,
+                        length(openness.labels[ranks])), 
+                    collapse = ""),
+             paste0(rep(icon.yellow,
+                        5 - length(openness.labels[ranks])), 
+                    collapse = ""),
+             "</div>"),
+           collapse = ""
     )
   }
   
@@ -395,41 +421,41 @@ server <- function(input, output, session) {
                 colors = c("#440154FF", "#21908CFF", "orange"),
                 labels = c("objects", "sites", "dates"),
                 opacity = 0.8) 
-      
+    
     if(input$surfaces){
       
-       surfaces <- sites[ ! is.na(sites$bbox.lon1), ]
-       surfaces$area <- (surfaces$bbox.lon2 - surfaces$bbox.lon1) *
-         (surfaces$bbox.lat2 - surfaces$bbox.lat1) 
-       surfaces <- surfaces[order(abs(surfaces$area), decreasing = T), ]
-       
-        map <- map %>%  # — add surfaces ####
-        addRectangles(data = surfaces,
-                      lng1 = ~bbox.lon1,
-                      lat1 = ~bbox.lat1,
-                      lng2 = ~bbox.lon2,
-                      lat2 = ~bbox.lat2,
-                      popup = ~popup,
-                      color = "darkred",
-                      weight = 2, fillOpacity = 0.1,
-                      label = ~site.name,
-                      options = pathOptions(clickable = T,
-                                            interactive = TRUE),
-                      popupOptions = popupOptions(closeOnClick=T)
-                      )
+      surfaces <- sites[ ! is.na(sites$bbox.lon1), ]
+      surfaces$area <- (surfaces$bbox.lon2 - surfaces$bbox.lon1) *
+        (surfaces$bbox.lat2 - surfaces$bbox.lat1) 
+      surfaces <- surfaces[order(abs(surfaces$area), decreasing = T), ]
+      
+      map <- map %>%  # — add surfaces ####
+      addRectangles(data = surfaces,
+                    lng1 = ~bbox.lon1,
+                    lat1 = ~bbox.lat1,
+                    lng2 = ~bbox.lon2,
+                    lat2 = ~bbox.lat2,
+                    popup = ~popup,
+                    color = "darkred",
+                    weight = 2, fillOpacity = 0.1,
+                    label = ~site.name,
+                    options = pathOptions(clickable = T,
+                                          interactive = TRUE),
+                    popupOptions = popupOptions(closeOnClick=T)
+      )
     }
     
     map %>% addCircleMarkers(data = sites[ ! is.na(sites$lat), ],
-                     ~lon, ~lat,
-                     popup = ~popup, layerId = ~id,
-                     label = ~site.name,
-                     color = ~color, radius = 6,
-                     fillOpacity = ~fillOpacity,
-                     opacity = 0.99,
-                     options = pathOptions(clickable = T,
-                                           interactive = TRUE),
-                     popupOptions = popupOptions(closeOnClick=T),
-                     clusterOptions = markerClusterOptions()) 
+                             ~lon, ~lat,
+                             popup = ~popup, layerId = ~id,
+                             label = ~site.name,
+                             color = ~color, radius = 6,
+                             fillOpacity = ~fillOpacity,
+                             opacity = 0.99,
+                             options = pathOptions(clickable = T,
+                                                   interactive = TRUE),
+                             popupOptions = popupOptions(closeOnClick=T),
+                             clusterOptions = markerClusterOptions()) 
   })
   
   # Visit stats ----
