@@ -1,10 +1,13 @@
 The archeoViz Portal
 ================
 
-The *archeoViz Portal* is a web application to collect and explore references of independent instances of the *[https://github.com/sebastien-plutniak/archeoviz](archeoViz)* application (an application for visual  and statistical exploration of archaeological spatial data). 
-The *archeoViz portal* is deployed since 2023 at https://analytics.huma-num.fr/archeoviz/home.
+[![SWH](https://archive.softwareheritage.org/badge/origin/https://github.com/sebastien-plutniak/archeoviz-portal-app/)](https://archive.softwareheritage.org/browse/origin/?origin_url=https://github.com/sebastien-plutniak/archeoviz-portal-app)
 
-Using the dynamic table,  *archeoViz* instances can be:
+## Presentation
+
+The *archeoViz Portal* is an interactive catalogue of use-cases of the *[https://github.com/sebastien-plutniak/archeoviz](archeoViz)* application (an application for the visual and statistical exploration of archaeological spatial data). The *archeoViz portal* is deployed since 2023 at https://analytics.huma-num.fr/archeoviz/home. These instances are documented with detailed metadata, partially aligned on standards (geonames, Pactols, ORCID, VIAF).
+
+The catalogue can be browsed through a map and a dynamic table. Using the later, *archeoViz* instances can be:
 
 * sorted by:
     * site name
