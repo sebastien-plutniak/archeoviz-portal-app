@@ -6,7 +6,7 @@ library(magrittr)
 
 add.viaf.link <- function(name, viaf){
   if( ( ! is.na(name)) & ( ! is.na(viaf)) ){
-    paste0("<a href=https://viaf.org/", viaf, " target=_blank>", name,"</a>")
+    paste0("<a href=https://viaf.org/viaf/", viaf, " target=_blank>", name,"</a>")
   } else{ name }
 }
 

@@ -2,12 +2,13 @@ The archeoViz Portal
 ================
 
 [![SWH](https://archive.softwareheritage.org/badge/origin/https://github.com/sebastien-plutniak/archeoviz-portal-app/)](https://archive.softwareheritage.org/browse/origin/?origin_url=https://github.com/sebastien-plutniak/archeoviz-portal-app)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.10251182.svg)](https://doi.org/10.5281/zenodo.10251182)
 
 ## Presentation
 
-The *archeoViz Portal* is an interactive catalogue of use-cases of the *[https://github.com/sebastien-plutniak/archeoviz](archeoViz)* application (an application for the visual and statistical exploration of archaeological spatial data). The *archeoViz portal* is deployed since 2023 at https://analytics.huma-num.fr/archeoviz/home. These instances are documented with detailed metadata, partially aligned on standards (geonames, Pactols, ORCID, VIAF).
+The *archeoViz Portal* is an interactive catalogue of use-cases of the [https://github.com/sebastien-plutniak/archeoviz](*archeoViz*) application (an application for the visual and statistical exploration of archaeological spatial data). The *archeoViz Portal* is deployed since 2023 at https://analytics.huma-num.fr/archeoviz/home. These instances are documented with detailed metadata, partially aligned on standards (geonames, Pactols, ORCID, VIAF).
 
-The catalogue can be browsed through a map and a dynamic table. Using the later, *archeoViz* instances can be:
+*archeoViz Portal* is powered by the [*spatialCatalogueViewer*](https://github.com/sebastien-plutniak/spatialCatalogueViewer/) application, allowing for browsing the catalogue through a map and a dynamic table. Using the table *archeoViz* instances can be:
 
 * sorted by:
     * site name
