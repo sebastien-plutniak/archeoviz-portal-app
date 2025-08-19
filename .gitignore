@@ -1,3 +1,11 @@
+www/archeoviz-stat-generic.html
+www/archeoviz-stat-generic.html
+metadata-deployed.csv
+tmp
+object-types.csv
+www/chronoGraph.jpg
+.gitignore
+
 # History files
 .Rhistory
 .Rapp.history
